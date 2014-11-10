@@ -6,6 +6,9 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
+
+	<context:property-placeholder location="classpath*:spring/config.properties"/>
+	
 	<!-- Activate annotation configured components -->
 	<context:annotation-config />
 
@@ -17,15 +20,21 @@
 	<!-- Package w/ automagic repositories -->
 	<mongo:repositories base-package="com.gtc.pfm" />
 	
+	<bean id="userCreds" class="org.springframework.data.authentication.UserCredentials">
+		<constructor-arg value="${mongodb.username}" />
+        <constructor-arg value="${mongodb.password}" />
+    </bean>
+	
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
     	<constructor-arg name="mongo" ref="mongo"/>
-    	<constructor-arg name="databaseName" value="pfm"/>
+    	<constructor-arg name="databaseName" value="${mongodb.database}"/>
+    	<constructor-arg ref="userCreds" />
     </bean>
 
 	<!-- Factory bean that creates the Mongo instance -->
     <bean id="mongo" class="org.springframework.data.mongodb.core.MongoFactoryBean">
-    	<property name="host" value="localhost"/>
-    	<property name="port" value="27017"/>
+    	<property name="host" value="${mongodb.host}"/>
+    	<property name="port" value="${mongodb.port}"/>
     </bean>
 
 	<!-- Use this post processor to translate any MongoExceptions thrown in @Repository annotated classes -->
