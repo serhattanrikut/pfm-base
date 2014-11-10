@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="
+   	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+ 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+	
+
+	<!--  <beans:bean id="myFilter"
+		class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="authenticationSuccessHandler"
+			ref="mySuccessHandler" />
+	</beans:bean>
+	<beans:bean id="mySuccessHandler"
+		class="org.rest.security.MySavedRequestAwareAuthenticationSuccessHandler" />-->
+
+	<beans:bean id="customUserDetailsService" class="com.gtc.pfm.service.security.PfmUserDetailsService" />
+	
+	<!-- Configure Authorization, HTTP security configurations    -->
+	<http use-expressions="true">
+		
+		<intercept-url pattern="/api/admin/**" access="ROLE_ADMIN" />
+		<intercept-url pattern="/**" access="isAuthenticated()" />
+		<form-login />
+        <logout />
+	</http>
+	
+	<beans:bean id="encoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder"/>
+	
+	<!-- Configure Authentication mechanism -->
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="customUserDetailsService">
+			<!-- <password-encoder ref="encoder" />  -->
+		</authentication-provider>
+	</authentication-manager>
+	
+	<!-- method level security configuration-->
+	<sec:global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
+		<sec:expression-handler ref="secExpHandler"/>
+	</sec:global-method-security>
+	
+	<!-- custom permission evaluator on method level..see hasPermission() expression-->
+	<beans:bean id="secExpHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+		<beans:property name="permissionEvaluator">
+			<beans:bean class="com.gtc.pfm.service.security.PfmSecurityExpressionHandler"/>
+		</beans:property>
+	</beans:bean>
+
+</beans:beans>

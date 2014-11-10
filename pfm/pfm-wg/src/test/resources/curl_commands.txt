@@ -1,0 +1,7 @@
+# create package
+
+curl -v -H "Accept:application/json" -H "Content-Type:application/json;charset=UTF-8" -X POST -d '{"created":1355801412777,"updated":1355801412777,"name":"free beer","expired":1355811412777,"owner":{"id":"50cfe344391285f37fe48790","username":"serhat"},"recipient":{"id":"50cfe344391285f37fe48791","username":"vedat"},"venueRef":{"id":"50cfe344391285f37fe48797","name":"Uskudar","type":5,"countryName":"Istanbul","cityName":"Istanbul","location":[41.025858,29.015682]},"type":2,"open":true,"distance":0.0}' http://localhost:8090/pfm-wg/rest/package/createPackage
+
+# get package by id
+
+curl -HAccept:application/json http://localhost:8090/pfm-wg/rest/package/findPackageById/50cfe344391285f37fe487a1

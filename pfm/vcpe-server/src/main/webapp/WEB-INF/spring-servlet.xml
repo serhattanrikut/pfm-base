@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-3.1.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+	<mvc:annotation-driven />
+	<!-- Activate annotation configured components -->
+	<context:annotation-config />
+	<context:property-placeholder location="classpath*:spring/*.properties"/>
+		<!-- Activate annotation configured components -->
+	<context:annotation-config />
+
+	<!-- Scan components for annotations within the configured package -->
+	<context:component-scan base-package="com.gtc.pfm">
+		<context:exclude-filter type="annotation" expression="org.springframework.context.annotation.Configuration" />
+	</context:component-scan>
+
+    <bean id="jsonRequestParamResolver" class="com.gtc.pfm.ws.controller.JSONRequestParamResolver" lazy-init="true" depends-on="requestMappingHandlerAdapter"/>
+	
+	<bean id="requestMappingHandlerAdapter" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="customArgumentResolvers">
+			<list>
+				<ref bean="jsonRequestParamResolver" />
+			</list>
+		</property>
+    </bean>
+
+	
+</beans>
